@@ -1,4 +1,4 @@
-from .radio import Radio
+from radio.radio import Radio
 
 
 radio = Radio()

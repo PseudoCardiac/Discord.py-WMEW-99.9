@@ -1,5 +1,6 @@
 import discord, os, asyncio
 from dotenv import load_dotenv
+from radio.radio import Radio
 
 
 INTENTS = discord.Intents.default()
@@ -10,6 +11,7 @@ TREE = discord.app_commands.CommandTree( CLIENT )
 VC = None
 FFMPEG_PATH = "C:/Users/nooye/Downloads/ffmpeg-8.1.1-essentials_build/ffmpeg-8.1.1-essentials_build/bin/ffmpeg.exe"
 TEST_AUDIO_PATH = "C:/Users/nooye/Downloads/WMEW 99.9/radio/songs/9th_life.ogg"
+RADIO = Radio()
 
 
 @CLIENT.event
@@ -43,8 +45,8 @@ async def on_message( msg: discord.Message ):
             return
 
         VC = await voiceChannel.connect()
-        await playAudio( TEST_AUDIO_PATH )
         await msg.reply( "connect" )
+        await playAudio( TEST_AUDIO_PATH )
 
     elif msg.content == '2':
         voiceState = msg.author.voice   # type: ignore
@@ -75,9 +77,18 @@ async def playAudio( audio ):
     if VC is None:
         print( "오디오를 재생할 음성 채널을 찾을 수 없습니다." )
         return
-    VC.play( discord.FFmpegPCMAudio( executable = FFMPEG_PATH , source = audio ) )
-    await asyncio.sleep( 5 )
-    await VC.disconnect()
+
+    while VC.is_connected():
+        radio: list[ tuple[ str, float ] ] = RADIO.next()    # type: ignore
+
+        for curr in radio:
+            src, time = curr
+            VC.play( discord.FFmpegPCMAudio( executable = FFMPEG_PATH , source = src ) )
+            await asyncio.sleep( time + 2.0 )
+    
+    VC.stop()
+    
+    # await VC.disconnect()
 
 
 load_dotenv( "../.env" )

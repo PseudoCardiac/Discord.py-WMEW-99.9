@@ -50,22 +50,22 @@ NEXT = {
 
 
 AUDIO_PATH = {
-    State.BEGIN: "./radio/gamestart_intros",
+    State.BEGIN: "./radio/radio/gamestart_intros",
 
-    State.SONG: "./radio/songs",
+    State.SONG: "./radio/radio/songs",
 
-    State.INTRO: "./radio/intros",
+    State.INTRO: "./radio/radio/intros",
 
-    State.OUTRO: "./radio/outros",
+    State.OUTRO: "./radio/radio/outros",
 
-    State.TRANSITIONAL: "./radio/transitionals",
+    State.TRANSITIONAL: "./radio/radio/transitionals",
 
-    State.COMM_INTRO: "./radio/commercialbreak",
+    State.COMM_INTRO: "./radio/radio/commercialbreak",
 
-    State.COMM: "./radio/commercials",
+    State.COMM: "./radio/radio/commercials",
 
-    State.SEGMENT: "./radio/segments",
+    State.SEGMENT: "./radio/radio/segments",
 
-    State.CALL_LETTER: "./radio/call_letters"
+    State.CALL_LETTER: "./radio/radio/call_letters"
 
 }

@@ -1,7 +1,7 @@
 import os, re
 from random import sample
-from state import State, AUDIO_PATH
-from intro_outro import INTRO, OUTRO
+from radio.state import State, AUDIO_PATH
+from radio.intro_outro import INTRO, OUTRO
 from random import choice
 
 
@@ -27,7 +27,7 @@ class Playlist:
     def getIntro( self ):
         if self.state != State.SONG: raise Exception( "오류: 음악 이외의 오디오의 인트로를 취득하려고 시도함!" )
         
-        intros = []
+        intros: list[str] = []
 
         title = self.songName[:-4]
         for intro in INTRO:
@@ -45,7 +45,7 @@ class Playlist:
     def getOutro( self ):
         if self.state != State.SONG: raise Exception( "오류: 음악 이외의 오디오의 아우트로를 취득하려고 시도함!" )
         
-        outros = []
+        outros: list[str] = []
 
         title = self.songName[:-4]
         for outro in OUTRO:
