@@ -30,7 +30,7 @@ async def on_message( msg: discord.Message ):
     print( f"'{ msg.content }'" )
 
     if msg.content == '1':
-        voiceState = msg.author.voice
+        voiceState = msg.author.voice   # type: ignore
 
         if voiceState is None:
             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
@@ -47,7 +47,7 @@ async def on_message( msg: discord.Message ):
         await msg.reply( "connect" )
 
     elif msg.content == '2':
-        voiceState = msg.author.voice
+        voiceState = msg.author.voice   # type: ignore
 
         if voiceState is None:
             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
