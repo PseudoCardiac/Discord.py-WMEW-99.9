@@ -116,7 +116,7 @@ async def playAudio():
 
         for curr in radio:
             src, time = curr
-            VC.play( discord.FFmpegOpusAudio( executable = FFMPEG_PATH , source = src ) )
+            VC.play( discord.FFmpegOpusAudio( executable = FFMPEG_PATH , source = src, options = "-c:a copy" ) )
             await asyncio.sleep( time )
             while VC.is_playing():
                 await asyncio.sleep( 0.1 )
