@@ -9,71 +9,101 @@ CLIENT = discord.Client( intents=INTENTS )
 TREE = discord.app_commands.CommandTree( CLIENT )
 
 VC = None
+RADIO_CHANNEL: discord.VoiceChannel = None      # type: ignore 
+RADIO_TEXT_CHANNEL: discord.TextChannel = None  # type: ignore
 FFMPEG_PATH = "C:/Users/nooye/Downloads/ffmpeg-8.1.1-essentials_build/ffmpeg-8.1.1-essentials_build/bin/ffmpeg.exe"
-TEST_AUDIO_PATH = "C:/Users/nooye/Downloads/WMEW 99.9/radio/songs/9th_life.ogg"
 RADIO = Radio()
 
 
 @CLIENT.event
 async def on_ready():
+    global RADIO_CHANNEL, RADIO_TEXT_CHANNEL
+    RADIO_CHANNEL = CLIENT.get_channel( 1022402805153153065 )      # type: ignore
+    RADIO_TEXT_CHANNEL = CLIENT.get_channel( 1022402783485370398 ) # type: ignore
     print( "WMEW 99.9 Currently Running On:" )
     print()
     for guild in CLIENT.guilds:
         print( f"{ guild.name } ({ str( guild.id ) })" )
 
 
-@CLIENT.event
-async def on_message( msg: discord.Message ):
-    global VC
+# @CLIENT.event
+# async def on_message( msg: discord.Message ):
+#     global VC
     
-    if msg.author.bot:
-        return
+#     if msg.author.bot:
+#         return
 
-    print( f"'{ msg.content }'" )
+#     if msg.content == '1':
+#         voiceState = msg.author.voice   # type: ignore
 
-    if msg.content == '1':
-        voiceState = msg.author.voice   # type: ignore
+#         if voiceState is None:
+#             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
+#             return
 
-        if voiceState is None:
-            await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
-            return
+#         voiceChannel = voiceState.channel
 
-        voiceChannel = voiceState.channel
+#         if voiceChannel is None:
+#             await msg.reply( "연결할 음성 채널을 찾을 수 없습니다." )
+#             return
 
-        if voiceChannel is None:
-            await msg.reply( "연결할 음성 채널을 찾을 수 없습니다." )
-            return
+#         VC = await voiceChannel.connect()
+#         await msg.reply( "connect" )
+#         await playAudio( TEST_AUDIO_PATH )
 
-        VC = await voiceChannel.connect()
-        await msg.reply( "connect" )
-        await playAudio( TEST_AUDIO_PATH )
+#     elif msg.content == '2':
+#         voiceState = msg.author.voice   # type: ignore
 
-    elif msg.content == '2':
-        voiceState = msg.author.voice   # type: ignore
+#         if voiceState is None:
+#             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
+#             return
 
-        if voiceState is None:
-            await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
-            return
+#         voiceChannel = voiceState.channel
 
-        voiceChannel = voiceState.channel
+#         if voiceChannel is None:
+#             await msg.reply( "사용자가 연결된 음성 채널을 찾을 수 없습니다." )
+#             return
 
-        if voiceChannel is None:
-            await msg.reply( "사용자가 연결된 음성 채널을 찾을 수 없습니다." )
-            return
+#         if VC is None:
+#             await msg.reply( "연결 해제할 음성 채널을 찾을 수 없습니다." )
+#             return
 
-        if VC is None:
-            await msg.reply( "연결 해제할 음성 채널을 찾을 수 없습니다." )
-            return
-
-        if CLIENT.user not in voiceChannel.members:
-            await msg.reply( "봇이 음성 채널에 연결되어 있지 않습니다." )
-            return
+#         if CLIENT.user not in voiceChannel.members:
+#             await msg.reply( "봇이 음성 채널에 연결되어 있지 않습니다." )
+#             return
         
-        await VC.disconnect()
-        await msg.reply( "disconnect" )
+#         await VC.disconnect()
+#         await msg.reply( "disconnect" )
 
 
-async def playAudio( audio ):
+@CLIENT.event
+async def on_voice_state_update( member: discord.Member, before: discord.VoiceState, after: discord.VoiceState ):
+    global VC
+
+    isBotConnected = CLIENT.user in RADIO_CHANNEL.members
+    onlyRadio = len( RADIO_CHANNEL.members ) == 1 and isBotConnected
+    onlyPeople = len( RADIO_CHANNEL.members ) > 0 and not isBotConnected
+    zeroPeople = len( RADIO_CHANNEL.members ) == 0
+    radioAndPeople = len( RADIO_CHANNEL.members ) > 0 and isBotConnected
+
+    if onlyRadio:
+        if not isinstance( VC, discord.VoiceClient ):
+            return  # something's wrong
+
+        VC.stop()
+        await VC.disconnect()   # type: ignore
+
+    elif onlyPeople:
+        VC = await RADIO_CHANNEL.connect()
+        await playAudio()
+
+    elif zeroPeople:
+        pass # do nothing (maybe a warning)
+
+    elif radioAndPeople:
+        pass # do nothing (maybe a welcome message)
+
+
+async def playAudio():
     if VC is None:
         print( "오디오를 재생할 음성 채널을 찾을 수 없습니다." )
         return
@@ -85,8 +115,6 @@ async def playAudio( audio ):
             src, time = curr
             VC.play( discord.FFmpegPCMAudio( executable = FFMPEG_PATH , source = src ) )
             await asyncio.sleep( time + 2.0 )
-    
-    VC.stop()
     
     # await VC.disconnect()
 
