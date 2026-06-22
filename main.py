@@ -20,9 +20,9 @@ RADIO = Radio()
 async def on_ready():
     global RADIO_CHANNEL
     # global RADIO_TEXT_CHANNEL
-    RADIO_CHANNEL = CLIENT.get_channel( 1022402805153153065 )      # type: ignore   # 테스트 서버 보이스
+    # RADIO_CHANNEL = CLIENT.get_channel( 1022402805153153065 )      # type: ignore   # 테스트 서버 보이스
     # RADIO_TEXT_CHANNEL = CLIENT.get_channel( 1022402783485370398 ) # type: ignore   # 테스트 서버 텍스트
-    # RADIO_CHANNEL = CLIENT.get_channel( 1517897765659873290 )      # type: ignore   # 뮤제닉스 서버 보이스
+    RADIO_CHANNEL = CLIENT.get_channel( 1517897765659873290 )      # type: ignore   # 뮤제닉스 서버 보이스
     print( "WMEW 99.9 Currently Running On:" )
     print()
     for guild in CLIENT.guilds:
