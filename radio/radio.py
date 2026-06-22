@@ -1,11 +1,11 @@
 from random import choice
 from radio.playlist import Playlist
 from radio.state import State, NEXT
-from pygame import mixer
-from time import sleep
+# from pygame import mixer
+# from time import sleep
 
 
-mixer.init()
+# mixer.init()
 PADDING_TIME = 0
 
 
@@ -29,51 +29,51 @@ class Radio:
             self.nextState()     # 반드시 song
 
             songSource = self.playlist[ self.state ].nowPlaying()
-            song = mixer.Sound( songSource )
+            # song = mixer.Sound( songSource )
             
             try:
                 introSource = self.playlist[ self.state ].getIntro()
-                intro = mixer.Sound( introSource )
+                # intro = mixer.Sound( introSource )
                 # intro.play()
-                introRunningtime = intro.get_length()
+                # introRunningtime = intro.get_length()
                 # sleep( self.runningTime + PADDING_TIME )
             except TypeError:
                 print( f"{'[INTRO]':<15}!SKIPPED DUE TO NO INTRO!" )
                 introSource = None
-                introRunningtime = 0.0
+                # introRunningtime = 0.0
 
             self.printLog()
             # song.play()
-            songRunningtime = song.get_length()
+            # songRunningtime = song.get_length()
             # sleep( self.runningTime + PADDING_TIME )
 
-            return [ ( introSource, introRunningtime ), ( songSource, songRunningtime ) ]
+            return [ introSource, songSource ]
 
         # nowPlaying 호출 전, 직전 재생된 음악의 아우트로를 재생
         elif self.state == State.OUTRO:
             try:
                 outroSource = self.playlist[ State.SONG ].getOutro()
-                outro = mixer.Sound( outroSource )
+                # outro = mixer.Sound( outroSource )
                 # outro.play()
-                outroRunningtime = outro.get_length()
+                # outroRunningtime = outro.get_length()
                 # sleep( outro.get_length() + PADDING_TIME )
             except TypeError:
                 print( f"{'[OUTRO]':<15}!SKIPPED DUE TO NO OUTRO!" )
                 outroSource = None
-                outroRunningtime = 0.0
+                # outroRunningtime = 0.0
 
-            return [ ( outroSource, outroRunningtime ) ]
+            return [ outroSource ]
 
 
         else:
             audioSource = self.playlist[ self.state ].nowPlaying()
-            audio = mixer.Sound( audioSource )
+            # audio = mixer.Sound( audioSource )
             self.printLog()
             # audio.play()
-            runningtime = audio.get_length()
+            # runningtime = audio.get_length()
             # sleep( self.runningTime + PADDING_TIME )
 
-            return [ ( audioSource, runningtime ) ]
+            return [ audioSource ]
 
 
     def nextState( self ):

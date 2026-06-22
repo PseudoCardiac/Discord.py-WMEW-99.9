@@ -1,4 +1,4 @@
-import os, re
+import os
 from random import sample
 from radio.state import State, AUDIO_PATH
 from radio.intro_outro import INTRO, OUTRO

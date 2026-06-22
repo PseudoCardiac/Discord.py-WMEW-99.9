@@ -29,55 +29,6 @@ async def on_ready():
         print( f"{ guild.name } ({ str( guild.id ) })" )
 
 
-# @CLIENT.event
-# async def on_message( msg: discord.Message ):
-#     global VC
-    
-#     if msg.author.bot:
-#         return
-
-#     if msg.content == '1':
-#         voiceState = msg.author.voice   # type: ignore
-
-#         if voiceState is None:
-#             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
-#             return
-
-#         voiceChannel = voiceState.channel
-
-#         if voiceChannel is None:
-#             await msg.reply( "연결할 음성 채널을 찾을 수 없습니다." )
-#             return
-
-#         VC = await voiceChannel.connect()
-#         await msg.reply( "connect" )
-#         await playAudio( TEST_AUDIO_PATH )
-
-#     elif msg.content == '2':
-#         voiceState = msg.author.voice   # type: ignore
-
-#         if voiceState is None:
-#             await msg.reply( "사용자가 음성 채널에 속해 있지 않습니다." )
-#             return
-
-#         voiceChannel = voiceState.channel
-
-#         if voiceChannel is None:
-#             await msg.reply( "사용자가 연결된 음성 채널을 찾을 수 없습니다." )
-#             return
-
-#         if VC is None:
-#             await msg.reply( "연결 해제할 음성 채널을 찾을 수 없습니다." )
-#             return
-
-#         if CLIENT.user not in voiceChannel.members:
-#             await msg.reply( "봇이 음성 채널에 연결되어 있지 않습니다." )
-#             return
-        
-#         await VC.disconnect()
-#         await msg.reply( "disconnect" )
-
-
 @CLIENT.event
 async def on_voice_state_update( member: discord.Member, before: discord.VoiceState, after: discord.VoiceState ):
     global VC
@@ -112,15 +63,15 @@ async def playAudio():
         return
 
     while VC.is_connected():
-        radio: list[ tuple[ str, float ] ] = RADIO.next()    # type: ignore
+        radio: list[ str ] = RADIO.next()    # type: ignore
 
         for curr in radio:
-            src, time = curr
+            src = curr
             VC.play( discord.FFmpegOpusAudio( executable = FFMPEG_PATH , source = src,
                                               options = "-vn -c:a libopus -b:a 64k" ) )
-            await asyncio.sleep( time + 1.0 )
-            # while VC.is_playing():
-            #     await asyncio.sleep( 0.1 )
+            # await asyncio.sleep( time + 1.0 )
+            while VC.is_playing():
+                await asyncio.sleep( 1 )
     
     # await VC.disconnect()
 
