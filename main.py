@@ -10,7 +10,7 @@ TREE = discord.app_commands.CommandTree( CLIENT )
 
 VC = None
 RADIO_CHANNEL: discord.VoiceChannel = None      # type: ignore 
-RADIO_TEXT_CHANNEL: discord.TextChannel = None  # type: ignore
+# RADIO_TEXT_CHANNEL: discord.TextChannel = None  # type: ignore
 # FFMPEG_PATH = "C:/Users/nooye/Downloads/ffmpeg-8.1.1-essentials_build/ffmpeg-8.1.1-essentials_build/bin/ffmpeg.exe"
 FFMPEG_PATH = "/usr/bin/ffmpeg"
 RADIO = Radio()
@@ -18,9 +18,11 @@ RADIO = Radio()
 
 @CLIENT.event
 async def on_ready():
-    global RADIO_CHANNEL, RADIO_TEXT_CHANNEL
-    RADIO_CHANNEL = CLIENT.get_channel( 1022402805153153065 )      # type: ignore
-    RADIO_TEXT_CHANNEL = CLIENT.get_channel( 1022402783485370398 ) # type: ignore
+    global RADIO_CHANNEL
+    # global RADIO_TEXT_CHANNEL
+    RADIO_CHANNEL = CLIENT.get_channel( 1022402805153153065 )      # type: ignore   # 테스트 서버 보이스
+    # RADIO_TEXT_CHANNEL = CLIENT.get_channel( 1022402783485370398 ) # type: ignore   # 테스트 서버 텍스트
+    # RADIO_CHANNEL = CLIENT.get_channel( 1517897765659873290 )      # type: ignore   # 뮤제닉스 서버 보이스
     print( "WMEW 99.9 Currently Running On:" )
     print()
     for guild in CLIENT.guilds:
@@ -114,8 +116,10 @@ async def playAudio():
 
         for curr in radio:
             src, time = curr
-            VC.play( discord.FFmpegPCMAudio( executable = FFMPEG_PATH , source = src ) )
-            await asyncio.sleep( time + 2.0 )
+            VC.play( discord.FFmpegOpusAudio( executable = FFMPEG_PATH , source = src, options = "-vbr" ) )
+            await asyncio.sleep( time )
+            while VC.is_playing():
+                await asyncio.sleep( 0.1 )
     
     # await VC.disconnect()
 
