@@ -11,7 +11,8 @@ TREE = discord.app_commands.CommandTree( CLIENT )
 VC = None
 RADIO_CHANNEL: discord.VoiceChannel = None      # type: ignore 
 RADIO_TEXT_CHANNEL: discord.TextChannel = None  # type: ignore
-FFMPEG_PATH = "C:/Users/nooye/Downloads/ffmpeg-8.1.1-essentials_build/ffmpeg-8.1.1-essentials_build/bin/ffmpeg.exe"
+# FFMPEG_PATH = "C:/Users/nooye/Downloads/ffmpeg-8.1.1-essentials_build/ffmpeg-8.1.1-essentials_build/bin/ffmpeg.exe"
+FFMPEG_PATH = "/usr/bin/ffmpeg"
 RADIO = Radio()
 
 
