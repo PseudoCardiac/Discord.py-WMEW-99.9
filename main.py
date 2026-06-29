@@ -48,7 +48,6 @@ async def on_voice_state_update( member: discord.Member, before: discord.VoiceSt
 
     elif onlyPeople:
         VC = await RADIO_CHANNEL.connect()
-        await playBeforeReady()
         await playAudio()
 
     elif zeroPeople:
@@ -75,19 +74,6 @@ async def playAudio():
                 await asyncio.sleep( 1 )
     
     # await VC.disconnect()
-
-
-async def playBeforeReady():
-    if VC is None:
-        print( "오디오를 재생할 음성 채널을 찾을 수 없습니다." )
-        return
-
-    print( "대기 메시지 송출" )
-    VC.play( discord.FFmpegOpusAudio( executable = FFMPEG_PATH , source = "./radio/radio/before_ready.wav",
-                                      options = "-vn -c:a libopus -b:a 64k" ) )
-
-    while VC.is_playing():
-        await asyncio.sleep( 1 )
 
 
 load_dotenv( "../.env" )
